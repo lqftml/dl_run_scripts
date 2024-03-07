@@ -1,11 +1,5 @@
 #!/bin/bash
 
-
-echo "PyTorch MPI launcher script called. \
-	This script parses MPI runner (mpirun or mpiexec) and \
-	sets up env variable needed for initialization of DDP: \
-	RANK, LOCAL_RANK, WORLD_SIZE."
-
 if [ ! -z "$OMPI_COMM_WORLD_RANK" ]; then
     export RANK=$OMPI_COMM_WORLD_RANK
     export LOCAL_RANK=$OMPI_COMM_WORLD_LOCAL_RANK
@@ -15,9 +9,21 @@ elif [ ! -z "$PMI_RANK" ]; then
     export LOCAL_RANK=$PMI_LOCAL_RANK
     export WORLD_SIZE=$(expr $PMI_SIZE + 0)
 else
-    echo "Error: MPI environment variables not found."
+    echo "Error: no OpenMPI or MPICH found."
     exit 1
 fi
+
+if [ ! -z "$PBS_NODEFILE" ]; then
+    MASTER_ADDR=$(head -n 1 $PBS_NODEFILE)
+    export MASTER_ADDR
+elif [ ! -z "$SLURM_NODELIST" ]; then
+    MASTER_ADDR=$(scontrol show hostnames $SLURM_NODELIST | head -n 1)
+else
+    echo "Error: PBS_NODEFILE is not set."
+    exit 1
+fi
+
+export MASTER_PORT=37728
 
 $@
 
