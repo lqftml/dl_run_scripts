@@ -18,6 +18,7 @@ if [ ! -z "$PBS_NODEFILE" ]; then
     export MASTER_ADDR
 elif [ ! -z "$SLURM_NODELIST" ]; then
     MASTER_ADDR=$(scontrol show hostnames $SLURM_NODELIST | head -n 1)
+    export MASTER_ADDR
 else
     echo "Error: PBS_NODEFILE is not set."
     exit 1
