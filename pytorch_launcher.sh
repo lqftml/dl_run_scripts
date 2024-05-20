@@ -26,5 +26,5 @@ fi
 
 export MASTER_PORT=37728
 
-$@
+"$@"
 
