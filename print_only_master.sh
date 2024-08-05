@@ -9,9 +9,6 @@ else
     exit 1
 fi
 
-
-
-
 #https://stackoverflow.com/a/28099707/7674852
 if [ $RANK -eq 0 ]
 then
