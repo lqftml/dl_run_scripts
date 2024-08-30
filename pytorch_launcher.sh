@@ -8,6 +8,10 @@ elif [ ! -z "$PMI_RANK" ]; then
     export RANK=$PMI_RANK
     export LOCAL_RANK=$PMI_LOCAL_RANK
     export WORLD_SIZE=$(expr $PMI_SIZE + 0)
+elif [ ! -z "$PALS_RANKID" ]; then
+    export RANK=$PALS_RANKID
+    export LOCAL_RANK=$PALS_LOCAL_RANKID
+    export WORLD_SIZE=$PALS_LOCAL_SIZE
 else
     echo "Error: no OpenMPI or MPICH found."
     exit 1
