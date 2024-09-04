@@ -11,7 +11,10 @@ elif [ ! -z "$PMI_RANK" ]; then
 elif [ ! -z "$PALS_RANKID" ]; then
     export RANK=$PALS_RANKID
     export LOCAL_RANK=$PALS_LOCAL_RANKID
-    export WORLD_SIZE=$PALS_LOCAL_SIZE
+    if [[ "${WORLD_SIZE}" == "" ]]; then
+        echo "Error: WORLD_SIZE must be set for PALS systems"
+        exit 1
+    fi
 else
     echo "Error: no OpenMPI or MPICH found."
     exit 1

@@ -4,6 +4,8 @@ if [ ! -z "$OMPI_COMM_WORLD_RANK" ]; then
     export RANK=$OMPI_COMM_WORLD_RANK
 elif [ ! -z "$PMI_RANK" ]; then
     export RANK=$PMI_RANK
+elif [ ! -z "$PALS_RANKID" ]; then
+    export RANK=$PALS_RANKID
 else
     echo "Error: no OpenMPI or MPICH found."
     exit 1
