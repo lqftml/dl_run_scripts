@@ -31,7 +31,7 @@ else
     export MASTER_ADDR
 fi
 
-export MASTER_PORT=37728
+export MASTER_PORT=29500
 
 "$@"
 
