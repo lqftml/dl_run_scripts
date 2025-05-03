@@ -14,6 +14,11 @@ function usage() {
     exit 1
 }
 
+function log() {
+    d=$(date)
+    echo "MONITOR [$d]: $1"
+}
+
 if [[ "${SLEEP_TIME}" == "" ]]; then
     usage
 fi
@@ -29,24 +34,26 @@ last_modified=""
 while true; do
     sleep $SLEEP_TIME
     dir=$(ls ${CKPT_PATH} | head -n1)
-    echo "Checking log directory: ${CKPT_PATH}/${dir}"
-    last_mod=$(date -r "${CKPT_PATH}/${dir}/model.pt")
-    echo "PATH" "${CKPT_PATH}/${dir}/model.pt"
-    echo "last_mod=${last_mod}"
+    log "Checking log directory: ${CKPT_PATH}/${dir}"
     if [[ ! -f "${CKPT_PATH}/${dir}/config.pickle" ]]; then
-        echo "Config.pickle not found"
-        ((fail_count++))
-    elif [[ "${last_modified}" == "${last_mod}" ]]; then
-        echo "No change in checkpoint"
-        find "${CKPT_PATH}/${dir}"
+        log "Config.pickle not found"
         ((fail_count++))
     else
-        echo "Syncing checkpoints"
-        rsync -aRP ${CKPT_PATH}/./${dir} ${SAVE_PATH}/
+        last_mod=$(date -r "${CKPT_PATH}/${dir}/model.pt")
+        log "PATH=${CKPT_PATH}/${dir}/model.pt"
+        log "last_mod=${last_mod}"
+        if [[ "${last_modified}" == "${last_mod}" ]]; then
+            log "No change in checkpoint"
+            find "${CKPT_PATH}/${dir}"
+            ((fail_count++))
+        else
+            log "Syncing checkpoints"
+            rsync -aRP ${CKPT_PATH}/./${dir} ${SAVE_PATH}/
+        fi
+        last_modified="${last_mod}"
     fi
-    last_modified="${last_mod}"
     if (( fail_count > 10 )); then
-        echo "Too many failed updates, exiting!"
+        log "Too many failed updates, exiting!"
         exit 1
     fi
 done
