@@ -1,16 +1,16 @@
 #!/bin/bash
 
 ### Run on rank 0 to monitor for checkpoint creation.
-###  - Periodically copies data to permanent storage path
 ###  - Quits with non-zero exit code if checkpoint was not recently modified
+### No longer required, so doesn't copy data to permanent storage path
 
 
 SLEEP_TIME=$1
 CKPT_PATH=$2
-SAVE_PATH=$3
+# SAVE_PATH=$3
 
 function usage() {
-    echo "$0 <sleep_time> <ckpt_path> <save_path>"
+    echo "$0 <sleep_time> <ckpt_path>"
     exit 1
 }
 
@@ -25,9 +25,9 @@ fi
 if [[ "${CKPT_PATH}" == "" ]]; then
     usage
 fi
-if [[ "${SAVE_PATH}" == "" ]]; then
-    usage
-fi
+# if [[ "${SAVE_PATH}" == "" ]]; then
+#     usage
+# fi
 
 fail_count=0
 last_modified=""
@@ -47,8 +47,9 @@ while true; do
             find "${CKPT_PATH}/${dir}"
             ((fail_count++))
         else
-            log "Syncing checkpoints"
-            rsync -aRP ${CKPT_PATH}/./${dir} ${SAVE_PATH}/
+            log "Checkpoint updated"
+            # log "Syncing checkpoints"
+            # rsync -aRP ${CKPT_PATH}/./${dir} ${SAVE_PATH}/
         fi
         last_modified="${last_mod}"
     fi
