@@ -33,7 +33,7 @@ fail_count=0
 last_modified=""
 while true; do
     sleep $SLEEP_TIME
-    dir=$(ls ${CKPT_PATH} | head -n1)
+    dir=$(ls ${CKPT_PATH} | tail -n1)
     log "Checking log directory: ${CKPT_PATH}/${dir}"
     if [[ ! -f "${CKPT_PATH}/${dir}/config.pickle" ]]; then
         log "Config.pickle not found"
